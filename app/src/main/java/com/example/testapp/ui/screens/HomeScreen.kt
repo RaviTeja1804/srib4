@@ -88,26 +88,32 @@ fun HomeScreen(
         // 🤩 Puzzle Image Grid
         Text("🤩 Your Puzzle", style = MaterialTheme.typography.titleMedium)
         puzzleImage?.let { image ->
-            val pieceSize = image.width / 4
+            val pieceWidth = image.width / 4
+            val pieceHeight = image.height / 4
+
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((pieceSize * 4).dp)
+                    .height((pieceHeight * 4).dp)  // Total height in dp
             ) {
                 items(16) { index ->
                     val row = index / 4
                     val col = index % 4
-                    val piece = Bitmap.createBitmap(image, col * pieceSize, row * pieceSize, pieceSize, pieceSize)
+                    val piece = Bitmap.createBitmap(image, col * pieceWidth, row * pieceHeight, pieceWidth, pieceHeight)
 
                     Box(
                         modifier = Modifier
                             .padding(1.dp)
                             .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp))
-                            .size(pieceSize.dp)
+                            .aspectRatio(pieceWidth.toFloat() / pieceHeight)  // maintain ratio
                     ) {
                         if (index in currentUser.pieces) {
-                            Image(bitmap = piece.asImageBitmap(), contentDescription = null)
+                            Image(
+                                bitmap = piece.asImageBitmap(),
+                                contentDescription = null,
+                                modifier = Modifier.fillMaxSize()
+                            )
                         }
                     }
                 }
