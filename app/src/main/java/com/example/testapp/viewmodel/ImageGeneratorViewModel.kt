@@ -63,7 +63,7 @@ class ImageGeneratorViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 // Step 1: Get prompt from Gemini
-                val geminiPrompt = "Give me a short, descriptive prompt (max 10 words ONLY) for a general event or occasion celebrated mainly in India or worldwide during the month of $monthName."
+                val geminiPrompt = "Give me a short, descriptive prompt (max 10 words ONLY) for a festival or general occasion celebrated mainly in India or worldwide during the month of $monthName."
 
                 val geminiRequestBody = JSONObject().apply {
                     put("contents", JSONArray().put(

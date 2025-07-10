@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -52,7 +54,6 @@ fun HomeScreen(
         }
     }
 
-
     // Live leaderboard listener
     DisposableEffect(Unit) {
         val registration: ListenerRegistration = usersRef
@@ -66,9 +67,11 @@ fun HomeScreen(
         onDispose { registration.remove() }
     }
 
+    // Make the entire screen scrollable
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
         // Top Row: Greeting + Logout
@@ -95,7 +98,8 @@ fun HomeScreen(
                 columns = GridCells.Fixed(4),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height((pieceHeight * 4).dp)  // Total height in dp
+                    .heightIn(max = 400.dp), // Use heightIn instead of fixed height
+                userScrollEnabled = false // Disable grid scrolling since parent is scrollable
             ) {
                 items(16) { index ->
                     val row = index / 4
@@ -106,7 +110,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(1.dp)
                             .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(2.dp))
-                            .aspectRatio(pieceWidth.toFloat() / pieceHeight)  // maintain ratio
+                            .aspectRatio(pieceWidth.toFloat() / pieceHeight.toFloat()) // Use actual piece ratio
                     ) {
                         if (index in currentUser.pieces) {
                             Image(
@@ -124,10 +128,19 @@ fun HomeScreen(
 
         // Leaderboard
         Text("🏆 Leaderboard", style = MaterialTheme.typography.titleMedium)
-        LazyColumn(modifier = Modifier.height(150.dp)) {
+
+        // Use LazyColumn with limited height but ensure it doesn't overflow
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp) // Reduced height
+        ) {
             items(allUsers.size) { index ->
                 val u = allUsers[index]
-                Text("${u.username}: ${u.pieces.size} pieces")
+                Text(
+                    text = "${u.username}: ${u.pieces.size} pieces",
+                    modifier = Modifier.padding(vertical = 2.dp)
+                )
             }
         }
 
@@ -177,5 +190,8 @@ fun HomeScreen(
                 Text(label)
             }
         }
+
+        // Add some bottom padding to ensure content is visible
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
