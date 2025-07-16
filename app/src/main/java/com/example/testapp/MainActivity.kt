@@ -5,12 +5,15 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import com.example.testapp.data.model.User
 import com.example.testapp.ui.screens.HomeScreen
 import com.example.testapp.ui.screens.AuthScreen
 import com.example.testapp.ui.theme.TestAppTheme
 import com.example.testapp.viewmodel.AuthViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
 
@@ -20,6 +23,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+
+            val systemUiController = rememberSystemUiController()
+            val useDarkIcons = true
+
+            DisposableEffect(systemUiController, useDarkIcons) {
+                systemUiController.setStatusBarColor(
+                    color = Color.Transparent,
+                    darkIcons = useDarkIcons
+                )
+                systemUiController.setNavigationBarColor(
+                    color = Color.Transparent,
+                    darkIcons = useDarkIcons
+                )
+                onDispose {}
+            }
+
             TestAppTheme {
                 var isLoggedIn by remember { mutableStateOf(false) }
                 var currentUser by remember { mutableStateOf<User?>(null) }

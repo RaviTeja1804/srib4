@@ -87,6 +87,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
     // Optional Firebase Auth (if needed in future)
     implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
